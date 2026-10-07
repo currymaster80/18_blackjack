@@ -52,23 +52,33 @@ class Blackjack:
             key = input("[h]it [s]tand [q]uit: ").strip().lower()
 
             if key == "q":
+                print("Round cancelled.")
                 return False
 
             if key == "s":
+                print("Player stands.")
                 break
 
             if key == "h":
-                player.append(deck.draw())
+                card = deck.draw()
+                player.append(card)
+                print("You drew:", f"{card[0]}{card[1]}")
                 self.show(player, dealer)
 
                 if hand_value(player) > 21:
                     self.chips -= wager
                     print("Bust. Dealer wins.")
+                    print("Chips:", self.chips)
                     return True
+
+            else:
+                print("Invalid command. Use h, s, or q.")
 
         # Dealer draws until reaching 17
         while hand_value(dealer) < 17:
-            dealer.append(deck.draw())
+            card = deck.draw()
+            dealer.append(card)
+            print("Dealer draws:", f"{card[0]}{card[1]}")
 
         self.show(player, dealer, hide=False)
 
@@ -87,13 +97,15 @@ class Blackjack:
         else:
             print("Push.")
 
+        print("Chips:", self.chips)
         return True
 
     def run(self):
         print("Blackjack — starting chips:", self.chips)
+
         while self.chips > 0:
             if not self.round():
                 return
-            print("Chips:", self.chips)
+
             if input("Play again? [y/n]: ").strip().lower() != "y":
                 return
