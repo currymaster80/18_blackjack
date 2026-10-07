@@ -17,23 +17,47 @@ class Blackjack:
         dealer = [deck.draw(), deck.draw()]
         self.show(player, dealer)
 
+        pv = hand_value(player)
+        dv = hand_value(dealer)
+
+        # Handle natural Blackjack immediately
+        if pv == 21:
+            self.show(player, dealer, hide=False)
+
+            if dv == 21:
+                print("Push.")
+            else:
+                self.chips += 10
+                print("Blackjack! Player wins.")
+            return True
+
+        # Player actions
         while hand_value(player) < 21:
             key = input("[h]it [s]tand [q]uit: ").strip().lower()
+
             if key == "q":
                 return False
+
             if key == "s":
                 break
+
             if key == "h":
                 player.append(deck.draw())
                 self.show(player, dealer)
+
                 if hand_value(player) > 21:
                     print("Bust.")
                     return True
+
+        # Dealer draws until reaching 17
         while hand_value(dealer) < 17:
             dealer.append(deck.draw())
 
         self.show(player, dealer, hide=False)
+
         pv, dv = hand_value(player), hand_value(dealer)
+
+        # Determine result
         if dv > 21 or pv > dv:
             self.chips += 10
             print("Player wins.")
@@ -42,6 +66,7 @@ class Blackjack:
             print("Dealer wins.")
         else:
             print("Push.")
+
         return True
 
     def run(self):
